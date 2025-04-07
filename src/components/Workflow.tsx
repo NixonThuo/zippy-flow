@@ -9,22 +9,28 @@ import ReactFlow, {
     Connection,
     Edge,
     Node,
+    Position
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 const initialNodes: Node[] = [
     {
         id: '1',
-        data: { label: 'Start Node' },
-        position: { x: 100, y: 100 },
+        type: 'default', // or another supported type
+        data: { label: 'Source' },
+        position: { x: 0, y: 0 },
+        targetPosition: Position.Right
     },
 ];
+
 
 const initialEdges: Edge[] = [];
 
 const Workflow: React.FC = () => {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+    console.log(setNodes);
 
     const onConnect = useCallback(
         (connection: Connection | Edge) => setEdges((eds) => addEdge(connection, eds)),
