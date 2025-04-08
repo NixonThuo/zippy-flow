@@ -7,24 +7,16 @@ import ReactFlow, {
     useNodesState,
     useEdgesState,
     Connection,
-    Edge,
-    Node,
-    Position
+    Edge
 } from 'reactflow';
+import { initialEdges, initialNodes } from "./workflow.constants";
 import 'reactflow/dist/style.css';
+import SourceDevice from './SourceDevice';
 
-const initialNodes: Node[] = [
-    {
-        id: '1',
-        type: 'default', // or another supported type
-        data: { label: 'Source' },
-        position: { x: 0, y: 0 },
-        targetPosition: Position.Right
-    },
-];
+const nodeTypes = {
+    SourceDevice: SourceDevice
+};
 
-
-const initialEdges: Edge[] = [];
 
 const Workflow: React.FC = () => {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -45,6 +37,7 @@ const Workflow: React.FC = () => {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
+                nodeTypes={nodeTypes}
                 fitView
             >
                 <MiniMap />
