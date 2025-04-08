@@ -6,15 +6,22 @@ import ReactFlow, {
     Background,
     useNodesState,
     useEdgesState,
-    Connection,
-    Edge
+    Connection
 } from 'reactflow';
 import { initialEdges, initialNodes } from "./workflow.constants";
 import 'reactflow/dist/style.css';
 import SourceDevice from './SourceDevice';
+import CustomEdge from './CustomEdge';
+import ComponentDevice from './ComponentDevice';
 
 const nodeTypes = {
-    SourceDevice: SourceDevice
+    SourceDevice: SourceDevice,
+    ComponentDevice: ComponentDevice
+};
+
+
+const edgeTypes = {
+    customEdge: CustomEdge,
 };
 
 
@@ -25,8 +32,16 @@ const Workflow: React.FC = () => {
     console.log(setNodes);
 
     const onConnect = useCallback(
-        (connection: Connection | Edge) => setEdges((eds) => addEdge(connection, eds)),
-        [setEdges]
+        (connection: Connection) => {
+            const edge = {
+                ...connection,
+                animated: true,
+                id: `${edges.length} + 1`,
+                type: "customEdge",
+            };
+            setEdges((prevEdges) => addEdge(edge, prevEdges));
+        },
+        [edges]
     );
 
     return (
@@ -38,6 +53,7 @@ const Workflow: React.FC = () => {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
                 fitView
             >
                 <MiniMap />
