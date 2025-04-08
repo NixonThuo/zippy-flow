@@ -9,7 +9,7 @@ export default function ComponentDevice({
     id,
 }: NodeProps<{ partnum: string; manid: string }>) {
     const { setNodes } = useReactFlow();
-
+    console.log("ComponentDevice", partnum, manid, id);
     return (
         <Flex
             borderRadius={"24px"}
@@ -23,7 +23,7 @@ export default function ComponentDevice({
             width="140px"
         >
             <Flex grow="1">
-                <Text fontSize="small" mt={"-2px"}>
+                <Text fontSize="small" mt={"-2px"} color="black">
                     {partnum} - {manid}
                 </Text>
             </Flex>

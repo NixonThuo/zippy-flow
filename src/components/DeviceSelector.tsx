@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { Menu, Button } from "@chakra-ui/react";
-import { ChevronBarDown } from "react-bootstrap-icons";
+import { useEffect, useState, ChangeEvent } from "react";
+import { Select } from "@chakra-ui/select";
 import { useReactFlow, Node } from "reactflow";
 import { v4 as uuidv4 } from "uuid";
 
@@ -38,7 +37,9 @@ export default function DeviceSelector() {
   useEffect(() => {
     async function fetchDevices() {
       try {
-        const response = await fetch("http://195.35.11.199:5588/devices/listdevices"); // Replace with your actual endpoint URL
+        const response = await fetch(
+          "http://195.35.11.199:5588/devices/listdevices"
+        ); // Replace with your actual endpoint URL
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -51,38 +52,36 @@ export default function DeviceSelector() {
     fetchDevices();
   }, []);
 
-  // When a device is clicked, add a new node to the React Flow canvas
-  const onDeviceClick = (device: Device): void => {
-    const location = Math.random() * 500;
-    setNodes((prevNodes: Node<DeviceNodeData>[]) => [
-      ...prevNodes,
-      {
-        id: uuidv4(), // Generate a unique node id using uuid
-        data: {
-          partnum: device.part_num,
-          manid: device.manufacture_id,
+  // Updated handler: Accept the change event from the <Select> element
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>): void => {
+    const selectedId = parseInt(e.target.value, 10);
+    const selectedDevice = devices.find(
+      (device) => device.deviceid === selectedId
+    );
+    if (selectedDevice) {
+      const location = Math.random() * 500;
+      setNodes((prevNodes: Node<DeviceNodeData>[]) => [
+        ...prevNodes,
+        {
+          id: uuidv4(), // Generate a unique node id using uuid
+          data: {
+            partnum: selectedDevice.part_num,
+            manid: selectedDevice.manufacture_id,
+          },
+          type: "ComponentDevice", // Adjust the type as needed
+          position: { x: location, y: location },
         },
-        type: "ComponentDevice", // Adjust the type as needed
-        position: { x: location, y: location },
-      },
-    ]);
+      ]);
+    }
   };
 
   return (
-    <Menu.Root>
-      <MenuButton as={Button} rightIcon={<ChevronBarDown />}>
-        Add Device
-      </MenuButton>
-      <MenuList>
-        {devices.map((device) => (
-          <Menu.Item
-            key={device.deviceid}
-            onClick={() => onDeviceClick(device)}
-          >
-            {device.description}
-          </Menu.Item>
-        ))}
-      </MenuList>
-    </Menu.Root>
+    <Select placeholder="Add Device" onChange={handleSelectChange}>
+      {devices.map((device) => (
+        <option key={device.deviceid} value={device.deviceid}>
+          {device.description}
+        </option>
+      ))}
+    </Select>
   );
 }

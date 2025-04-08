@@ -1,5 +1,5 @@
-import { ChakraProvider, defaultSystem  } from "@chakra-ui/react";
-import Workflow from "./components/workflow";
+import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import Workflow from "./components/Workflow";
 
 function App() {
 

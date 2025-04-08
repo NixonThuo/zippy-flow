@@ -13,10 +13,12 @@ import 'reactflow/dist/style.css';
 import SourceDevice from './SourceDevice';
 import CustomEdge from './CustomEdge';
 import ComponentDevice from './ComponentDevice';
+import DeviceSelector from './DeviceSelector';
 
 const nodeTypes = {
     SourceDevice: SourceDevice,
-    ComponentDevice: ComponentDevice
+    ComponentDevice: ComponentDevice,
+    DeviceSelector: DeviceSelector
 };
 
 
