@@ -1,24 +1,16 @@
-import 'reactflow/dist/style.css';
+// components/SettingsPanel.tsx
+import DeviceSelector from "./DeviceSelector";
 
 const SettingsPanel = () => {
     return (
-        <div className="p-4 bg-white shadow-md w-64 h-full border-r">
-            <h2 className="text-lg font-semibold mb-4">Settings</h2>
-            <div className="space-y-2">
-                <label className="block">
-                    <input type="checkbox" className="mr-2" />
-                    Snap to grid
-                </label>
-                <label className="block">
-                    <input type="checkbox" className="mr-2" />
-                    Show grid
-                </label>
-                <button className="bg-blue-500 text-white px-3 py-1 rounded">
-                    Reset Zoom
-                </button>
+        <div className="position-absolute top-0 start-0 m-3 p-3 bg-primary text-white border border-primary rounded shadow" style={{ zIndex: 10 }}>
+            <h2 className="h5 mb-3">Settings</h2>
+            <div className="d-flex flex-column gap-2">
+                <DeviceSelector />
             </div>
         </div>
     );
 };
 
 export default SettingsPanel;
+

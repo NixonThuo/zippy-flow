@@ -14,6 +14,7 @@ import SourceDevice from './SourceDevice';
 import CustomEdge from './CustomEdge';
 import ComponentDevice from './ComponentDevice';
 import DeviceSelector from './DeviceSelector';
+import SettingsPanel from './SettingsPanel';
 
 const nodeTypes = {
     SourceDevice: SourceDevice,
@@ -47,7 +48,7 @@ const Workflow: React.FC = () => {
     );
 
     return (
-        <div style={{ width: '100vw', height: '100vh' }}>
+        <div style={{ width: '100vw', height: '100vh', backgroundColor: '#1e1e1e' }}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -58,6 +59,7 @@ const Workflow: React.FC = () => {
                 edgeTypes={edgeTypes}
                 fitView
             >
+                <SettingsPanel />
                 <MiniMap />
                 <Controls />
                 <Background />
