@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -9,6 +9,7 @@ import ReactFlow, {
   useEdgesState,
   Connection,
   Node,
+  NodeProps,
 } from "reactflow";
 import { initialEdges, initialNodes } from "./workflow.constants";
 import "reactflow/dist/style.css";
@@ -32,11 +33,6 @@ export type DeviceNodeData = {
   devicetype: string | null;
 };
 
-const nodeTypes = {
-  SourceDevice,
-  ComponentDevice,
-};
-
 const edgeTypes = {
   customEdge: CustomEdge,
 };
@@ -44,10 +40,20 @@ const edgeTypes = {
 const Workflow: React.FC = () => {
   const [nodes, setNodes, onNodesChange] =
     useNodesState<Node<DeviceNodeData>>(initialNodes);
-  console.log("nodes", setNodes);
+  console.log(setNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedDevice, setSelectedDevice] = useState<DeviceNodeData | null>(
-    null
+  const [selectedDevice, setSelectedDevice] = useState<DeviceNodeData | null>(null);
+  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
+
+  // Create nodeTypes with typed props parameter
+  const nodeTypes = useMemo(
+    () => ({
+      SourceDevice,
+      ComponentDevice: (props: NodeProps<DeviceNodeData>) => (
+        <ComponentDevice {...props} isActive={props.id === activeNodeId} />
+      ),
+    }),
+    [activeNodeId]
   );
 
   // Handle connecting edges
@@ -61,21 +67,21 @@ const Workflow: React.FC = () => {
       };
       setEdges((prev) => addEdge(edge, prev));
     },
-    [edges]
+    [edges, setEdges]
   );
 
-  // When a node is double-clicked, store its data in state
+  // When a node is double-clicked, store its data and set active
   const onNodeDoubleClick = (
     event: React.MouseEvent,
     node: Node<DeviceNodeData>
   ) => {
     setSelectedDevice(node.data);
+    setActiveNodeId(node.id);
   };
 
   return (
     <ReactFlowProvider>
       <div style={{ width: "100vw", height: "100vh", backgroundColor: "#1e1e1e" }}>
-        {/* Pass selectedDevice into SettingsPanel */}
         <SettingsPanel device={selectedDevice} />
 
         <ReactFlow
