@@ -52,14 +52,13 @@ export default function DeviceSelector() {
     fetchDevices();
   }, []);
 
-  // Updated handler: Accept the change event from the <Select> element
+  // Handler: Always position new nodes at (0, 0)
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>): void => {
     const selectedId = parseInt(e.target.value, 10);
     const selectedDevice = devices.find(
       (device) => device.deviceid === selectedId
     );
     if (selectedDevice) {
-      const location = Math.random() * 500;
       setNodes((prevNodes: Node<DeviceNodeData>[]) => [
         ...prevNodes,
         {
@@ -69,14 +68,18 @@ export default function DeviceSelector() {
             manid: selectedDevice.manufacture_id,
           },
           type: "ComponentDevice", // Adjust the type as needed
-          position: { x: location, y: location },
+          position: { x: 0, y: 0 },
         },
       ]);
     }
   };
 
   return (
-    <Select placeholder="Add Device" onChange={handleSelectChange} style={{ color: "black" }}>
+    <Select
+      placeholder="Add Device"
+      onChange={handleSelectChange}
+      style={{ color: "black" }}
+    >
       {devices.map((device) => (
         <option key={device.deviceid} value={device.deviceid}>
           {device.description}
