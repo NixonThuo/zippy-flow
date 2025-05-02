@@ -76,7 +76,7 @@ export default function DeviceSelector() {
   };
 
   return (
-    <Select placeholder="Add Device" onChange={handleSelectChange} style={{ color: "white" }}>
+    <Select placeholder="Add Device" onChange={handleSelectChange} style={{ color: "black" }}>
       {devices.map((device) => (
         <option key={device.deviceid} value={device.deviceid}>
           {device.description}
