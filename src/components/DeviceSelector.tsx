@@ -25,8 +25,17 @@ interface DevicesResponse {
 
 // Define the type for the node data you'll add to React Flow
 interface DeviceNodeData {
-  partnum: string;
-  manid: string;
+  deviceid: number;
+  locationid: number;
+  one_line: string;
+  three_line: string;
+  two_d: string;
+  three_d: string;
+  part_num: string;
+  manufacture_id: string;
+  date_added: string;
+  description: string;
+  devicetype: string | null;
 }
 
 export default function DeviceSelector() {
@@ -64,8 +73,17 @@ export default function DeviceSelector() {
         {
           id: uuidv4(), // Generate a unique node id using uuid
           data: {
-            partnum: selectedDevice.part_num,
-            manid: selectedDevice.manufacture_id,
+            deviceid: selectedDevice.deviceid,
+            locationid: selectedDevice.locationid,
+            one_line: selectedDevice.one_line,
+            three_line: selectedDevice.three_line,
+            two_d: selectedDevice.two_d,
+            three_d: selectedDevice.three_d,
+            part_num: selectedDevice.part_num,
+            manufacture_id: selectedDevice.manufacture_id,
+            date_added: selectedDevice.date_added,
+            description: selectedDevice.description,
+            devicetype: selectedDevice.devicetype,
           },
           type: "ComponentDevice", // Adjust the type as needed
           position: { x: 0, y: 0 },
