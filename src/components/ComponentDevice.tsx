@@ -4,7 +4,7 @@ import { NodeProps, Position, useReactFlow } from "reactflow";
 import CustomHandle from "./CustomHandle";
 
 // Extend NodeProps to accept our isActive flag
-interface ComponentDeviceProps extends NodeProps<{
+interface ComponentDeviceProps extends NodeProps<{  
   deviceid: number;
   locationid: number;
   one_line: string;
@@ -21,11 +21,7 @@ interface ComponentDeviceProps extends NodeProps<{
 }
 
 export default function ComponentDevice({
-  data: {
-    part_num,
-    manufacture_id,
-    description,
-  },
+  data: { part_num, manufacture_id, description },
   id,
   isActive,
 }: ComponentDeviceProps) {
@@ -35,13 +31,11 @@ export default function ComponentDevice({
     <Flex
       direction="column"
       borderRadius="24px"
-      // Use the passed-in isActive prop for your styling
       border={isActive ? "2px solid #ff5e5e" : "2px solid #5e5eff"}
       bg="white"
       p={2}
       width="200px"
       position="relative"
-      // Remove local onDoubleClick — Workflow handles activation
       cursor="pointer"
     >
       <Flex justify="space-between" align="center">
@@ -67,8 +61,9 @@ export default function ComponentDevice({
         {description}
       </Text>
 
-      <CustomHandle type="target" position={Position.Left} />
-      <CustomHandle type="source" position={Position.Right} />
+      {/* Explicit handle IDs to ensure sourceHandle/targetHandle are populated */}
+      <CustomHandle id={`target-${id}`} type="target" position={Position.Left} />
+      <CustomHandle id={`source-${id}`} type="source" position={Position.Right} />
     </Flex>
   );
 }
