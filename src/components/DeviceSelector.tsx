@@ -1,5 +1,6 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { Select } from "@chakra-ui/select";
+import { Button, Box, Flex } from "@chakra-ui/react";
 import { useReactFlow, Node } from "reactflow";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,86 +24,86 @@ interface DevicesResponse {
   devices: Device[];
 }
 
-// Define the type for the node data you'll add to React Flow
-interface DeviceNodeData {
-  deviceid: number;
-  locationid: number;
-  one_line: string;
-  three_line: string;
-  two_d: string;
-  three_d: string;
-  part_num: string;
-  manufacture_id: string;
-  date_added: string;
-  description: string;
-  devicetype: string | null;
-}
-
 export default function DeviceSelector() {
   const { setNodes } = useReactFlow();
   const [devices, setDevices] = useState<Device[]>([]);
+  const [selectedId, setSelectedId] = useState<number | "">("");
 
-  // Fetch device data from the endpoint on component mount
+  // Fetch devices on mount
   useEffect(() => {
-    async function fetchDevices() {
+    (async () => {
       try {
-        const response = await fetch(
+        const res = await fetch(
           "http://195.35.11.199:5588/devices/listdevices"
-        ); // Replace with your actual endpoint URL
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data: DevicesResponse = await response.json();
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: DevicesResponse = await res.json();
         setDevices(data.devices);
-      } catch (error) {
-        console.error("Failed to fetch devices:", error);
+      } catch (err) {
+        console.error("Error fetching devices:", err);
       }
-    }
-    fetchDevices();
+    })();
   }, []);
 
-  // Handler: Always position new nodes at (0, 0)
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    const selectedId = parseInt(e.target.value, 10);
-    const selectedDevice = devices.find(
-      (device) => device.deviceid === selectedId
-    );
-    if (selectedDevice) {
-      setNodes((prevNodes: Node<DeviceNodeData>[]) => [
-        ...prevNodes,
-        {
-          id: uuidv4(), // Generate a unique node id using uuid
-          data: {
-            deviceid: selectedDevice.deviceid,
-            locationid: selectedDevice.locationid,
-            one_line: selectedDevice.one_line,
-            three_line: selectedDevice.three_line,
-            two_d: selectedDevice.two_d,
-            three_d: selectedDevice.three_d,
-            part_num: selectedDevice.part_num,
-            manufacture_id: selectedDevice.manufacture_id,
-            date_added: selectedDevice.date_added,
-            description: selectedDevice.description,
-            devicetype: selectedDevice.devicetype,
-          },
-          type: "ComponentDevice", // Adjust the type as needed
-          position: { x: 0, y: 0 },
-        },
-      ]);
-    }
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedId(e.target.value ? parseInt(e.target.value, 10) : "");
+  };
+
+  const handleAddClick = () => {
+    if (selectedId === "") return;
+    const device = devices.find((d) => d.deviceid === selectedId);
+    if (!device) return;
+    setNodes((prev: Node<Device>[]) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        data: device,
+        type: "ComponentDevice",
+        position: { x: 0, y: 0 },
+      },
+    ]);
+    setSelectedId("");
   };
 
   return (
-    <Select
-      placeholder="Add Device"
-      onChange={handleSelectChange}
-      style={{ color: "black" }}
+    <Box
+      bg="rgba(30,30,30,0.9)"
+      color="white"
+      p={4}
+      borderRadius="lg"
+      boxShadow="xl"
+      border="1px solid"
+      borderColor="gray.700"
     >
-      {devices.map((device) => (
-        <option key={device.deviceid} value={device.deviceid}>
-          {device.description}
-        </option>
-      ))}
-    </Select>
+      <Flex align="center">
+        <Select
+          placeholder="Select a Device"
+          value={selectedId === "" ? undefined : selectedId}
+          onChange={handleSelectChange}
+          bg="gray.700"
+          color="black"
+          _placeholder={{ color: "gray.400" }}
+          focusBorderColor="teal.300"
+          variant="filled"
+          flex="1"
+          mr={3}
+        >
+          {devices.map((device) => (
+            <option key={device.deviceid} value={device.deviceid}>
+              {device.description}
+            </option>
+          ))}
+        </Select>
+        <Button
+          onClick={handleAddClick}
+          size="sm"
+          bg="gray.500"
+          color="white"
+          _hover={{ bg: "gray.600" }}
+        >
+          Add
+        </Button>
+      </Flex>
+    </Box>
   );
 }

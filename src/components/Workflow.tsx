@@ -17,7 +17,8 @@ import SourceDevice from "./SourceDevice";
 import CustomEdge from "./CustomEdge";
 import ComponentDevice from "./ComponentDevice";
 import SettingsPanel from "./SettingsPanel";
-import { Box, Button } from "@chakra-ui/react";
+import DeviceSelector from "./DeviceSelector";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -90,6 +91,13 @@ const Workflow: React.FC = () => {
     saveAs(blob, "flow-data.xlsx");
   }, [nodes, edges]);
 
+  // Handle JSON export
+  const handleExportJSON = useCallback(() => {
+    const data = JSON.stringify({ nodes, edges }, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    saveAs(blob, "flow-data.json");
+  }, [nodes, edges]);
+
   // Create nodeTypes with typed props parameter
   const nodeTypes = useMemo(
     () => ({
@@ -103,17 +111,41 @@ const Workflow: React.FC = () => {
 
   return (
     <ReactFlowProvider>
-      <Box position="absolute" top={4} right={4} zIndex={20}>
-        <Button
-          size="sm"
-          bg="gray.500"
-          color="white"
-          _hover={{ bg: "gray.600" }}
-          onClick={handleExport}
-        >
-          Export to Excel
-        </Button>
+      {/* Device selector placed top-center */}
+      <Box
+        position="absolute"
+        top={4}
+        left="50%"
+        transform="translateX(-50%)"
+        zIndex={20}
+      >
+        <DeviceSelector />
       </Box>
+
+      {/* Export buttons top-right */}
+      <Box position="absolute" top={4} right={4} zIndex={20}>
+        <Flex direction="column" gap={2}>
+          <Button
+            size="sm"
+            bg="gray.500"
+            color="white"
+            _hover={{ bg: "gray.600" }}
+            onClick={handleExport}
+          >
+            Export to Excel
+          </Button>
+          <Button
+            size="sm"
+            bg="gray.500"
+            color="white"
+            _hover={{ bg: "gray.600" }}
+            onClick={handleExportJSON}
+          >
+            Export to JSON
+          </Button>
+        </Flex>
+      </Box>
+
       <div
         style={{ width: "100vw", height: "100vh", backgroundColor: "#1e1e1e" }}
       >
